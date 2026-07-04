@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { averageImpact, executiveSummary, getProblems, summarizeByTheme } from "@/lib/data";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const problems = await getProblems();
   const byTheme = summarizeByTheme(problems);

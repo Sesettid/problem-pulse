@@ -3,7 +3,7 @@ import { demoProblems } from "@/lib/demo-data";
 import type { AiAnalysis, Problem, ProblemTheme, ProblemWithAnalysis } from "@/lib/types";
 
 type ProblemRow = Problem & {
-  ai_analysis: AiAnalysis[] | null;
+  ai_analysis: AiAnalysis | AiAnalysis[] | null;
   problem_votes: { id: string }[] | null;
 };
 
@@ -26,7 +26,9 @@ export async function getProblems(): Promise<ProblemWithAnalysis[]> {
 
   return (data as ProblemRow[])
     .map((problem) => {
-      const analysis = problem.ai_analysis?.[0] ?? null;
+      const analysis = Array.isArray(problem.ai_analysis)
+        ? problem.ai_analysis[0] ?? null
+        : problem.ai_analysis ?? null;
       const voteCount = problem.problem_votes?.length ?? 0;
       const priorityScore = (analysis?.impact_score ?? 0) * Math.max(voteCount, 1);
 

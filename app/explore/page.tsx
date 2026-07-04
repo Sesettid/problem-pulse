@@ -7,6 +7,8 @@ import { ConfigNotice } from "@/components/config-notice";
 import { VoteButton } from "@/components/vote-button";
 import { getProblems } from "@/lib/data";
 
+export const dynamic = "force-dynamic";
+
 export default async function ExploreProblemsPage() {
   const problems = await getProblems();
 
