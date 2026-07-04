@@ -1,6 +1,8 @@
-# Problem Pulse
+# Surface
 
-Problem Pulse is a simple problem discovery platform where employees submit workplace problems and AI identifies common organizational themes.
+Discover what matters. Solve what counts.
+
+Surface is a simple problem discovery platform where employees submit workplace problems and AI identifies common organizational themes.
 
 ## Stack
 

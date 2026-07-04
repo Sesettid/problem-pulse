@@ -36,11 +36,14 @@ export default function Home() {
               Workplace discovery for modern teams
             </div>
             <h1 className="max-w-4xl text-5xl font-semibold tracking-normal text-foreground sm:text-6xl lg:text-7xl">
-              Problem Pulse
+              Surface
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
-              A simple way for employees to submit workplace problems, group repeated pain points,
-              and turn scattered feedback into executive-ready opportunities.
+              Discover what matters. Solve what counts.
+            </p>
+            <p className="mt-4 max-w-2xl leading-7 text-muted-foreground">
+              Help employees surface workplace problems, group repeated pain points, and turn
+              scattered feedback into executive-ready opportunities.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">

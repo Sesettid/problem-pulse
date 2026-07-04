@@ -65,7 +65,7 @@ export function averageImpact(problems: ProblemWithAnalysis[]) {
 
 export function executiveSummary(problems: ProblemWithAnalysis[]) {
   if (!problems.length) {
-    return "Based on all submissions, Problem Pulse will surface the top organizational opportunities as employees begin sharing problems.";
+    return "Based on all submissions, Surface will identify the top organizational opportunities as employees begin sharing problems.";
   }
 
   const themeSummary = summarizeByTheme(problems)

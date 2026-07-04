@@ -16,7 +16,7 @@ export function Nav() {
           <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <Activity className="h-5 w-5" />
           </span>
-          <span>Problem Pulse</span>
+          <span>Surface</span>
         </Link>
         <nav className="hidden items-center gap-1 sm:flex">
           {links.map((link) => (
