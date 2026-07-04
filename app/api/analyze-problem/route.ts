@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { z } from "zod";
+import { analyzeProblemLocally } from "@/lib/local-analysis";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { problemThemes } from "@/lib/types";
 
@@ -26,11 +27,33 @@ const analysisSchema = z.object({
 export async function POST(request: Request) {
   const body = await request.json();
   const problem = requestSchema.parse(body);
+  const analysis = process.env.OPENAI_API_KEY
+    ? await analyzeWithOpenAi(problem)
+    : analyzeProblemLocally(problem);
 
-  if (!process.env.OPENAI_API_KEY) {
-    return NextResponse.json({ skipped: true, reason: "Missing OPENAI_API_KEY" }, { status: 202 });
+  const supabase = createServerSupabaseClient();
+  const { error } = await supabase.from("ai_analysis").upsert(
+    {
+      problem_id: problem.problem_id,
+      summary: analysis.summary,
+      theme: analysis.theme,
+      root_cause: analysis.root_cause,
+      affected_personas: analysis.affected_personas,
+      suggested_solution_area: analysis.suggested_solution_area,
+      impact_score: analysis.impact_score,
+      complexity_score: analysis.complexity_score
+    },
+    { onConflict: "problem_id" }
+  );
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  return NextResponse.json(analysis);
+}
+
+async function analyzeWithOpenAi(problem: z.infer<typeof requestSchema>) {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   const completion = await openai.chat.completions.create({
@@ -72,28 +95,8 @@ export async function POST(request: Request) {
 
   const content = completion.choices[0]?.message.content;
   if (!content) {
-    return NextResponse.json({ error: "OpenAI returned an empty analysis" }, { status: 502 });
+    throw new Error("OpenAI returned an empty analysis");
   }
 
-  const analysis = analysisSchema.parse(JSON.parse(content));
-  const supabase = createServerSupabaseClient();
-  const { error } = await supabase.from("ai_analysis").upsert(
-    {
-      problem_id: problem.problem_id,
-      summary: analysis.summary,
-      theme: analysis.theme,
-      root_cause: analysis.root_cause,
-      affected_personas: analysis.affected_personas,
-      suggested_solution_area: analysis.suggested_solution_area,
-      impact_score: analysis.impact_score,
-      complexity_score: analysis.complexity_score
-    },
-    { onConflict: "problem_id" }
-  );
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json(analysis);
+  return analysisSchema.parse(JSON.parse(content));
 }
